@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+    <head>
+        <title><%= title %></title>
+        <link rel="icon" type="image/jpeg" href="favicon.ico" />
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="style.css?v=<%= version %>" />
+    </head>
+    <body>
+        <div id="preact-root"></div>
+        <div class="container-outer">
+            <nav class="nav-outer" id="nav-main"></nav>
+        </div>
+        <header class="header-outer">
+            <h1 class="title-main"><%= title %></h1>
+            <h2 class="server-hostname"><%= serverHostname %></h2>
+            <h5 class="client-ip"><%= clientIp %></h5>
+        </header>
+        <div id="monitor" class="monitor-outer"></div>
+        <div class="logo-outer">
+            <div class="logo"></div>
+        </div>
+        <footer>
+            <ul class="logos-services">
+            <% services.forEach(service => { %>
+                <li class="logo-service">
+                    <a href="<%= service.link %>" title="<%= service.description %>">
+                        <div class="logo logo-big logo-<%= service['title-short'] %>"></div>
+                        <h4><%- service.title %></h4>
+                    </a>
+                </li>
+            <% }) %>
+            </ul>
+        </footer>
+        <script src="bundle.js?v=<%= version %>"></script>
+    </body>
+</html>

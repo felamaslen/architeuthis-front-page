@@ -1,13 +1,9 @@
-const express = require('express');
+const dotenv = require('dotenv');
+if (process.env.NODE_ENV === 'development') {
+    dotenv.config();
+}
 
-const app = express();
+const app = require('./app');
 
-app.use((req, res) => {
-    res.status(502)
-        .send('<h1>Architeuthis Front page</h1><p>tbc</p>');
-});
-
-app.listen(process.env.PORT || 3000, () => {
-    console.log('Server listening');
-});
+app.run();
 
