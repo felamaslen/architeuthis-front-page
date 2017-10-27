@@ -31,6 +31,15 @@
                 </li>
             <% }) %>
             </ul>
+            <ul class="logos-brands">
+            <% logos.forEach(logo => { %>
+                <li class="logo-brand">
+                    <a rel="nofollow" target="_blank" href="<%= logo.link %>">
+                        <div class="logo logo-<%= logo.title %>"></div>
+                    </a>
+                </li>
+            <% }) %>
+            </ul>
         </footer>
         <script src="bundle.js?v=<%= version %>"></script>
     </body>
