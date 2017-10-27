@@ -5,7 +5,7 @@ const moduleConfigDev = require('./module.dev');
 
 module.exports = {
     ...webpackConfig,
-    devtool: 'source-map',
+    devtool: 'eval-cheap-module-source-map',
     entry: [
         `webpack-dev-server/client?http://0.0.0.0:${process.env.PORT_WDS}`,
         'webpack/hot/only-dev-server',

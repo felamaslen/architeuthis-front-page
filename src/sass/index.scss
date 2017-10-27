@@ -1,8 +1,24 @@
 @import '~sprite.scss';
+@import './mixins.scss';
+@import './variables.scss';
 
-body {
-    margin: 0;
-    color: yellow;
-    background: brown;
+@import './reset.scss';
+
+.container-outer {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+}
+.nav-outer {
+}
+
+.header-outer {
+    .title-main {
+    }
+}
+
+.logo-outer {
+    @include retina-sprite($squid2-group);
 }
 
