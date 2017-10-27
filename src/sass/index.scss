@@ -4,21 +4,8 @@
 
 @import './reset.scss';
 
-.container-outer {
-    display: flex;
-    flex-flow: column;
-    align-items: center;
-    justify-content: center;
-}
-.nav-outer {
-}
-
-.header-outer {
-    .title-main {
-    }
-}
-
-.logo-outer {
-    @include retina-sprite($squid2-group);
-}
+@import './main.scss';
+@import './nav.scss';
+@import './header.scss';
+@import './footer.scss';
 

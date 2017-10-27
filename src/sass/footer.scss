@@ -1,0 +1,50 @@
+footer {
+}
+
+.logos-services {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    .logo-service {
+        width: $logo-service-width;
+        height: $logo-service-height;
+
+        text-align: center;
+        margin: 0.2em 0.5em;
+        border-radius: 5px;
+        box-shadow: 0 5px 6px rgba(0, 0, 0, 0.3);
+        background-image: linear-gradient(top, #45484d 0%, black 100%);
+
+        a {
+            display: flex;
+            height: inherit;
+            text-indent: -9999px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo {
+            &.logo-cacti {
+                @include retina-sprite($cacti-group);
+            }
+            &.logo-ntop {
+                @include retina-sprite($ntop-group);
+            }
+            &.logo-torrents {
+                @include retina-sprite($torrents-group);
+            }
+            &.logo-vm {
+                @include retina-sprite($vm-group);
+            }
+            &.logo-syncthing {
+                @include retina-sprite($syncthing-group);
+            }
+        }
+    }
+}
+.logos-brands {
+}
+
