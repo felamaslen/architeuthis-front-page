@@ -84,17 +84,22 @@
             padding: 0;
             list-style: none;
         }
-    }
-
-    .nav-box-specs {
+        
         .nav-dropdown {
             display: flex;
+            margin-bottom: 1em;
             flex-flow: column;
-        }
-        .spec {
-            padding: 0.3em 0;
-            transition: background 0.3s ease;
 
+            li {
+                padding: 0.3em 0;
+                transition: background 0.3s ease;
+            }
+        }
+
+    }
+    
+    .nav-box-specs {
+        .spec {
             &:not(:last-child) {
                 border-bottom: 1px solid #ccc;
             }
@@ -133,6 +138,12 @@
                 @include retina-sprite($motherboard-group);
             }
         }
+    }
+
+    .nav-box-services {
+    }
+
+    .nav-box-ups {
     }
 }
 
