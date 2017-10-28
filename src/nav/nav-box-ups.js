@@ -26,7 +26,7 @@ export default () => {
             <li>{'Charge: '}{props.charge}</li>
             <li>{'Backup time: '}{props.backupTime}</li>
             <li>{'Transfers: '}{props.transfers}</li>
-            <li>{'Last power failure: '}{dateFormat(props.lastPowerFailure, 'dddd, mmmm yyyy HH:MM:ss')}</li>
+            <li>{'Last power failure: '}{dateFormat(props.lastPowerFailure, 'dddd, mmmm dd yyyy HH:MM:ss')}</li>
             <li>{'Time on battery: '}{props.timeOnBattery}</li>
         </ul>
     </div>;
