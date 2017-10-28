@@ -26,8 +26,10 @@ export default class NavBox extends Component {
         });
 
         return <div className={className}>
-            <div className="inner">
-                {this.getInnerComponent(selected)}
+            <div className="nav-box">
+                <div className="inner">
+                    {this.getInnerComponent(selected)}
+                </div>
             </div>
         </div>;
     }

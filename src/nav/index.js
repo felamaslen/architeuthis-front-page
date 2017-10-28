@@ -1,4 +1,5 @@
 import { Component, h } from "preact";
+import classNames from 'classnames';
 
 import NavBox from './nav-box';
 
@@ -15,10 +16,16 @@ export default class Nav extends Component {
         const links = ['specs', 'services', 'ups'];
 
         const navLinks = links.map(link => {
-            const className = `nav-link nav-link-${link}`;
+            const selected = this.state.selected === link;
+
+            const className = classNames({
+                [`nav-link nav-link-${link}`]: true,
+                selected: selected && !this.state.hidden,
+            });
+
             const onActivate = () => this.setState({
                 selected: link,
-                hidden: !this.state.hidden && this.state.selected === link
+                hidden: !this.state.hidden && selected
             });
 
             return <li key={link} className={className} onMouseDown={onActivate}>
@@ -27,9 +34,11 @@ export default class Nav extends Component {
         });
 
         return <div className="navbar-outer">
-            <ul className="nav-links">
-                {navLinks}
-            </ul>
+            <div className="nav-links-outer">
+                <ul className="nav-links">
+                    {navLinks}
+                </ul>
+            </div>
             <NavBox selected={this.state.selected} hidden={this.state.hidden} />
         </div>;
     }

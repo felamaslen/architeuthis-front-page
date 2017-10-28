@@ -1,6 +1,5 @@
 .nav-outer {
     display: flex;
-    margin: 0.5em 0;
     @include noselect;
     width: 100%;
     justify-content: center;
@@ -9,7 +8,7 @@
 
 .navbar-outer {
     position: relative;
-    height: 2.5em;
+    height: 38px;
     
     .nav-links {
         display: flex;
@@ -22,10 +21,9 @@
         justify-content: space-between;
     }
     .nav-link {
-        padding: 0 1em;
-        line-height: 2.5em;
+        display: block;
+        height: 38px;
         cursor: pointer;
-        border-radius: 2px;
         text-transform: capitalize;
         &.nav-link-ups {
             text-transform: uppercase;
@@ -39,28 +37,101 @@
             background: #ececec;
             color: #222;
         }
+
+        a {
+            display: block;
+            padding: 0 1em;
+            line-height: 36px;
+        }
+
+        &.selected a {
+            border-bottom: 3px solid rgb(255, 153, 26);
+        }
     }
 
     .nav-box-outer {
         display: flex;
+        z-index: 10;
         position: absolute;
         width: 150%;
-        top: 2.5em;
+        top: 38px;
         left: -25%;
-        max-height: 150%;
-        background: rgba(255, 255, 255, 0.8);
-        color: black;
+        transform: scaleY(1);
+        transform-origin: top;
         overflow: hidden;
+        background: rgba(255, 255, 255, 0.86);
+        color: black;
         border-radius: 0.1em 0.1em 0.3em 0.3em;
         box-shadow: 0 3px 14px rgba(190, 90, 0, 0.5);
-        transition: all 0.5s cubic-bezier(0, 1, 0.5, 1);
+        transition: transform 0.2s cubic-bezier(0, 1, 0.5, 1);
 
         &.hidden {
-            max-height: 0;
+            transform: scaleY(0);
+        }
+
+        .nav-box {
+            width: 100%;
         }
 
         .inner {
-            padding: 1em 1em 2em 1em;
+            z-index: inherit;
+            width: 100%;
+            position: relative;
+        }
+
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+    }
+
+    .nav-box-specs {
+        .nav-dropdown {
+            display: flex;
+            flex-flow: column;
+        }
+        .spec {
+            padding: 0.3em 0;
+            transition: background 0.3s ease;
+
+            &:not(:last-child) {
+                border-bottom: 1px solid #ccc;
+            }
+            &:hover {
+                background: #eee;
+            }
+        }
+        .specs-preview {
+            margin: 1em 0;
+            width: 340px;
+            height: 160px;
+            transition: opacity 0.1s linear;
+
+            &.hidden {
+                opacity: 0;
+            }
+            &.spec-0 {
+                @include retina-sprite($cpu-group);
+            }
+            &.spec-1 {
+                @include retina-sprite($ram-group);
+            }
+            &.spec-2 {
+                @include retina-sprite($hdd-group);
+            }
+            &.spec-3 {
+                @include retina-sprite($ssd-group);
+            }
+            &.spec-4 {
+                @include retina-sprite($psu-group);
+            }
+            &.spec-5 {
+                @include retina-sprite($case-group);
+            }
+            &.spec-6 {
+                @include retina-sprite($motherboard-group);
+            }
         }
     }
 }
