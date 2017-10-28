@@ -55,11 +55,13 @@ function run() {
         const clientIp = await getClientHostname(req);
 
         const uptime = getUptime();
+        const ups = await getUPSStatus();
 
         res.render('index', {
             version,
             clientIp,
             uptime,
+            ups,
             ...common
         });
     });

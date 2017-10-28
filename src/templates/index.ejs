@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="style.css?v=<%= version %>" />
         <script>
         //<![CDATA[
-        var globalConfig={uptime:<%- uptime %>};
+        var globalConfig={uptime:<%- uptime %>,ups:'<%- JSON.stringify(ups) %>'};
         //]]>
         </script>
     </head>

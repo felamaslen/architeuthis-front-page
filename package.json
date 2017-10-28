@@ -27,6 +27,7 @@
     "babel-preset-stage-0": "^6.24.1",
     "classnames": "^2.2.5",
     "css-loader": "^0.28.7",
+    "dateformat": "^3.0.2",
     "dotenv": "^4.0.0",
     "ejs": "^2.5.7",
     "express": "^4.16.2",
