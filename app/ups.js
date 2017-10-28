@@ -151,6 +151,10 @@ function getUPSStatusRaw() {
             });
         }
 
+        if (process.env.ONLY_CACHE === 'true') {
+            return resolve({});
+        }
+
         try {
             const data = await runUPSStatusCommand();
 

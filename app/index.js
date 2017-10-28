@@ -55,15 +55,20 @@ function run() {
         const clientIp = await getClientHostname(req);
 
         const uptime = getUptime();
-        const ups = await getUPSStatus();
 
-        res.render('index', {
-            version,
-            clientIp,
-            uptime,
-            ups,
-            ...common
-        });
+        let ups = {};
+        try {
+            ups = await getUPSStatus();
+        }
+        finally {
+            res.render('index', {
+                version,
+                clientIp,
+                uptime,
+                ups,
+                ...common
+            });
+        }
     });
 
     const getFavicon = (req, res) => res.sendFile(path.join(__dirname, '../assets/favicon.jpg'));
