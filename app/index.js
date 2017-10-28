@@ -2,6 +2,11 @@ const express = require('express');
 const path = require('path');
 const dns = require('dns');
 const os = require('os');
+const logger = require('./logger');
+
+if (process.env.DNS_SERVERS) {
+    dns.setServers([process.env.DNS_SERVERS]);
+}
 
 const { version } = require('../package.json');
 
@@ -10,11 +15,13 @@ const { common } = require('./config');
 const { getUPSStatus } = require('./ups');
 
 function getClientHostname(req) {
-    const clientIpRaw = req.headers['X-Forwarded-For'] || req.ip;
+    const clientIpRaw = req.headers['x-forwarded-for'] || req.ip;
 
     return new Promise(resolve => {
         dns.reverse(clientIpRaw, (err, hostnames) => {
             if (err) {
+                logger('warn', 'DNS reverse lookup failed for', clientIpRaw, err);
+
                 return resolve(clientIpRaw);
             }
 
@@ -44,7 +51,7 @@ function run() {
             res.json({ upsStatus });
         }
         catch (err) {
-            console.log('Error getting UPS status:', err);
+            logger('error', 'Error getting UPS status:', err);
 
             res.status(500)
                 .json({ status: 'Error getting UPS status' });
@@ -55,15 +62,20 @@ function run() {
         const clientIp = await getClientHostname(req);
 
         const uptime = getUptime();
-        const ups = await getUPSStatus();
 
-        res.render('index', {
-            version,
-            clientIp,
-            uptime,
-            ups,
-            ...common
-        });
+        let ups = {};
+        try {
+            ups = await getUPSStatus();
+        }
+        finally {
+            res.render('index', {
+                version,
+                clientIp,
+                uptime,
+                ups,
+                ...common
+            });
+        }
     });
 
     const getFavicon = (req, res) => res.sendFile(path.join(__dirname, '../assets/favicon.jpg'));

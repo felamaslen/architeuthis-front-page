@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
+const logger = require('./logger');
 
 const config = require('./config');
 
@@ -8,7 +9,7 @@ const APCACCESS_CACHE_FILE = path.join(__dirname, './.apcaccess.cache');
 
 const TIMEOUT_COMMAND = 5000;
 
-function processUPSValues({ data, fromCache }) {
+function processUPSValues({ data, ...rest }) {
     const propsRaw = data.split('\n')
         .map(line => line.match(/^([^\s]+).*?:\s*([^\s].*?)\s*$/))
         .filter(match => match && match.length > 1)
@@ -80,7 +81,7 @@ function processUPSValues({ data, fromCache }) {
 
         }, {});
 
-    return { props, fromCache };
+    return { props, ...rest };
 }
 
 function getUPSCacheExists() {
@@ -92,12 +93,14 @@ function getUPSCacheExists() {
 
             return fs.stat(APCACCESS_CACHE_FILE, (statErr, stats) => {
                 if (statErr) {
+                    logger('error', 'Couldn\'t stat UPS cache file', statErr);
+
                     return reject(statErr);
                 }
 
                 const mtime = +stats.mtime;
 
-                const cacheNotStale = Date.now() - mtime < config.common.constants.apcaccessCacheMaxAge;
+                const cacheNotStale = false; // Date.now() - mtime < config.common.constants.apcaccessCacheMaxAge;
 
                 return resolve(cacheNotStale);
             });
@@ -110,17 +113,24 @@ function runUPSStatusCommand() {
         let output = '';
 
         const args = (process.env.UPS_COMMAND || 'apcaccess').split(' ');
+
         const command = args.shift();
 
         const apc = spawn(command, args);
 
-        const timeout = setTimeout(() => reject(new Error('Timeout on apcaccess')), TIMEOUT_COMMAND);
+        const timeout = setTimeout(() => {
+            logger('error', 'UPS command timed out');
+
+            reject(new Error('Timeout on apcaccess'));
+        }, TIMEOUT_COMMAND);
 
         apc.stdout.on('data', data => {
             output += data;
         });
 
         const rejectWithError = err => {
+            logger('error', 'Error running UPS command', err);
+
             clearTimeout(timeout);
 
             reject(err);
@@ -144,6 +154,8 @@ function getUPSStatusRaw() {
         if (upsCacheExists) {
             return fs.readFile(APCACCESS_CACHE_FILE, 'utf8', (err, data) => {
                 if (err) {
+                    logger('error', 'Error reading UPS cache file', err);
+
                     return reject(err);
                 }
 
@@ -151,11 +163,17 @@ function getUPSStatusRaw() {
             });
         }
 
+        if (process.env.ONLY_CACHE === 'true') {
+            return resolve({ onlyCacheFail: true, data: '' });
+        }
+
         try {
             const data = await runUPSStatusCommand();
 
             return fs.writeFile(APCACCESS_CACHE_FILE, data, err => {
                 if (err) {
+                    logger('error', 'Error writing to UPS cache file', err);
+
                     return reject(err);
                 }
 

@@ -1,19 +1,34 @@
 import { h, Component } from 'preact';
 import dateFormat from 'dateformat';
 
-const ups = JSON.parse(globalConfig.ups).props;
+export default () => {
+    let { props } = JSON.parse(globalConfig.ups);
 
-export default () => <div className="nav-box-ups">
-    <h3>UPS</h3>
-    <ul className="nav-dropdown">
-        <li>{'Date: '}{dateFormat(ups.date, 'HH:MM yyyy-mm-dd')}</li>
-        <li>{'Model: '}{ups.model}</li>
-        <li>{'Load: '}{ups.load}</li>
-        <li>{'Charge: '}{ups.charge}</li>
-        <li>{'Backup time: '}{ups.backupTime}</li>
-        <li>{'Transfers: '}{ups.transfers}</li>
-        <li>{'Last power failure: '}{dateFormat(ups.lastPowerFailure, 'dddd, mmmm yyyy HH:MM:ss')}</li>
-        <li>{'Time on battery: '}{ups.timeOnBattery}</li>
-    </ul>
-</div>;
+    if (!(props && props.date)) {
+        props = {
+            date: null,
+            model: null,
+            load: null,
+            charge: null,
+            backupTime: null,
+            transfers: null,
+            lastPowerFailure: null,
+            timeOnBattery: null
+        };
+    }
+
+    return <div className="nav-box-ups">
+        <h3>UPS</h3>
+        <ul className="nav-dropdown">
+            <li>{'Date: '}{dateFormat(props.date, 'HH:MM yyyy-mm-dd')}</li>
+            <li>{'Model: '}{props.model}</li>
+            <li>{'Load: '}{props.load}</li>
+            <li>{'Charge: '}{props.charge}</li>
+            <li>{'Backup time: '}{props.backupTime}</li>
+            <li>{'Transfers: '}{props.transfers}</li>
+            <li>{'Last power failure: '}{dateFormat(props.lastPowerFailure, 'dddd, mmmm yyyy HH:MM:ss')}</li>
+            <li>{'Time on battery: '}{props.timeOnBattery}</li>
+        </ul>
+    </div>;
+}
 
