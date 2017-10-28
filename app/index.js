@@ -10,7 +10,7 @@ const { common } = require('./config');
 const { getUPSStatus } = require('./ups');
 
 function getClientHostname(req) {
-    const clientIpRaw = req.headers['X-Forwarded-For'] || req.ip;
+    const clientIpRaw = req.headers['x-forwarded-for'] || req.ip;
 
     return new Promise(resolve => {
         dns.reverse(clientIpRaw, (err, hostnames) => {
