@@ -1,9 +1,27 @@
-import axios from 'axios';
-
 import { Component, h } from 'preact';
+import classNames from 'classnames';
+import axios from 'axios';
 
 const TIMER_RESOLUTION = 50;
 const TIME_BETWEEN_SYNC = 10000;
+const CLOCK_DIGITS = 30;
+
+function getClockStatus(timeMS) {
+    const seconds = Math.floor(timeMS / 1000);
+
+    return new Array(CLOCK_DIGITS).fill(0)
+        .reduce(({ remaining, digits }, digit, index) => {
+            const digitStatus = remaining % 2;
+
+            return {
+                remaining: (remaining - digitStatus) / 2,
+                digits: [...digits, digitStatus]
+            };
+
+        }, { remaining: seconds, digits: [] })
+        .digits
+        .reverse();
+}
 
 export default class UptimeCounter extends Component {
     constructor(props) {
@@ -70,12 +88,17 @@ export default class UptimeCounter extends Component {
         }
     }
     render() {
-        return <div className="uptime-counter">
-            <span>{'Uptime ms:'}</span>
-            <span>{this.state.uptimeMS}</span>
-            <span>{'Hours:'}</span>
-            <span>{Math.round(this.state.uptimeMS / 1000 / 3600 * 100) / 100}</span>
-        </div>;
+        const digits = getClockStatus(this.state.uptimeMS)
+            .map(on => {
+                const classes = classNames({
+                    'clock-digit': true,
+                    on
+                });
+
+                return <span className={classes} />;
+            });
+
+        return <div className="uptime-counter">{digits}</div>;
     }
 }
 
