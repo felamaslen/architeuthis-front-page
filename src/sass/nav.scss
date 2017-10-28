@@ -4,6 +4,7 @@
     @include noselect;
     width: 100%;
     justify-content: center;
+    border-bottom: 1px solid #9c9c9c;
 }
 
 .navbar-outer {
@@ -19,7 +20,6 @@
         height: 100%;
         min-width: 200px;
         justify-content: space-between;
-        border-bottom: 1px solid #9c9c9c;
     }
     .nav-link {
         padding: 0 1em;
@@ -27,6 +27,9 @@
         cursor: pointer;
         border-radius: 2px;
         text-transform: capitalize;
+        &.nav-link-ups {
+            text-transform: uppercase;
+        }
 
         &:hover {
             background: #333;
@@ -44,16 +47,16 @@
         width: 150%;
         top: 2.5em;
         left: -25%;
-        height: auto;
+        max-height: 150%;
         background: rgba(255, 255, 255, 0.8);
         color: black;
         overflow: hidden;
         border-radius: 0.1em 0.1em 0.3em 0.3em;
         box-shadow: 0 3px 14px rgba(190, 90, 0, 0.5);
-        transition: all 0.5s ease-in-out;
+        transition: all 0.5s cubic-bezier(0, 1, 0.5, 1);
 
         &.hidden {
-            height: 0;
+            max-height: 0;
         }
 
         .inner {

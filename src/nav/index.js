@@ -16,12 +16,12 @@ export default class Nav extends Component {
 
         const navLinks = links.map(link => {
             const className = `nav-link nav-link-${link}`;
-            const onClick = () => this.setState({
+            const onActivate = () => this.setState({
                 selected: link,
                 hidden: !this.state.hidden && this.state.selected === link
             });
 
-            return <li key={link} className={className} onClick={onClick}>
+            return <li key={link} className={className} onMouseDown={onActivate}>
                 <a>{link}</a>
             </li>;
         });
