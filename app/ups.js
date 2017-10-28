@@ -8,7 +8,7 @@ const APCACCESS_CACHE_FILE = path.join(__dirname, './.apcaccess.cache');
 
 const TIMEOUT_COMMAND = 5000;
 
-function processUPSValues({ data, fromCache }) {
+function processUPSValues({ data, ...rest }) {
     const propsRaw = data.split('\n')
         .map(line => line.match(/^([^\s]+).*?:\s*([^\s].*?)\s*$/))
         .filter(match => match && match.length > 1)
@@ -80,7 +80,7 @@ function processUPSValues({ data, fromCache }) {
 
         }, {});
 
-    return { props, fromCache };
+    return { props, ...rest };
 }
 
 function getUPSCacheExists() {
@@ -152,7 +152,7 @@ function getUPSStatusRaw() {
         }
 
         if (process.env.ONLY_CACHE === 'true') {
-            return resolve({ fromCache: false, data: '' });
+            return resolve({ onlyCacheFail: true, data: '' });
         }
 
         try {
