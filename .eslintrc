@@ -8,7 +8,7 @@
     },
     "extends": [
         "eslint:recommended",
-        "plugin:react/recommended"
+        "plugin:standard-preact"
     ],
     "parserOptions": {
         "ecmaVersion": 8,

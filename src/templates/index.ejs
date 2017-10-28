@@ -6,9 +6,13 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0" />
         <link rel="stylesheet" href="style.css?v=<%= version %>" />
+        <script>
+        //<![CDATA[
+        var globalConfig={uptime:<%- uptime %>};
+        //]]>
+        </script>
     </head>
     <body>
-        <div id="preact-root"></div>
         <div class="container-outer">
             <nav class="nav-outer" id="nav-main"></nav>
             <header class="header-outer">

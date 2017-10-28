@@ -1,11 +1,11 @@
-import { h, render } from 'preact';
-
-/** @jsx h */
+import { h, render, Component } from 'preact';
 
 import './sass/index.scss';
 
+import UptimeCounter from './uptime-counter';
+
 render(
-    <h1>react works yay!</h1>,
-    document.getElementById('preact-root')
+    <UptimeCounter />,
+    document.getElementById('monitor')
 );
 

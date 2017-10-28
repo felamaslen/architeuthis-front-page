@@ -7,17 +7,12 @@ const sassVariables = encodeURIComponent(jsonToSassVars(
 
 const sassLoader = `css-loader!sass-loader!prepend-loader?data=${sassVariables}`;
 
-const babelOptions = JSON.stringify({
-    presets: ['react', 'env']
-});
-const babelLoader = `babel-loader?${babelOptions}`;
-
 module.exports = {
     loaders: [
         {
             test: /\.jsx?$/,
             exclude: /node_modules/,
-            loaders: [babelLoader]
+            loaders: 'babel-loader'
         },
         {
             test: /\.(woff2?|ttf|eot|svg|png|jpg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,

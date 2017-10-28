@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const dns = require('dns');
+const os = require('os');
 
 const { version } = require('../package.json');
 
@@ -20,18 +21,29 @@ function getClientHostname(req) {
     });
 }
 
+const getUptime = () => os.uptime();
+
 function run() {
     const app = express();
 
     app.set('views', path.join(__dirname, '../src/templates'));
     app.set('view engine', 'ejs');
 
+    app.get('/uptime', (req, res) => {
+        const uptime = getUptime();
+
+        res.json({ uptime });
+    });
+
     app.get('/', async (req, res) => {
         const clientIp = await getClientHostname(req);
+
+        const uptime = getUptime();
 
         res.render('index', {
             version,
             clientIp,
+            uptime,
             ...config
         });
     });
