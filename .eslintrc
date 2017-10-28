@@ -8,7 +8,7 @@
     },
     "extends": [
         "eslint:recommended",
-        "plugin:standard-preact"
+        "standard-preact"
     ],
     "parserOptions": {
         "ecmaVersion": 8,
@@ -140,7 +140,6 @@
         "no-extra-bind": "error",
         "no-extra-label": "error",
         "no-floating-decimal": "error",
-        "no-implicit-coercion": "error",
         "no-implicit-globals": "error",
         "no-implied-eval": "error",
         "no-invalid-this": "error",

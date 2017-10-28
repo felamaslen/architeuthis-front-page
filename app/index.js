@@ -5,7 +5,9 @@ const os = require('os');
 
 const { version } = require('../package.json');
 
-const config = require('./config');
+const { common } = require('./config');
+
+const { getUPSStatus } = require('./ups');
 
 function getClientHostname(req) {
     const clientIpRaw = req.headers['X-Forwarded-For'] || req.ip;
@@ -35,6 +37,20 @@ function run() {
         res.json({ uptime });
     });
 
+    app.get('/ups-status', async (req, res) => {
+        try {
+            const upsStatus = await getUPSStatus();
+
+            res.json({ upsStatus });
+        }
+        catch (err) {
+            console.log('Error getting UPS status:', err);
+
+            res.status(500)
+                .json({ status: 'Error getting UPS status' });
+        }
+    });
+
     app.get('/', async (req, res) => {
         const clientIp = await getClientHostname(req);
 
@@ -44,7 +60,7 @@ function run() {
             version,
             clientIp,
             uptime,
-            ...config
+            ...common
         });
     });
 
