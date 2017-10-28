@@ -1,6 +1,7 @@
 import { h, render, Component } from 'preact';
 
 import './sass/index.scss';
+import './images/favicon.jpg';
 
 import UptimeCounter from './uptime-counter';
 
