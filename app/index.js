@@ -4,6 +4,10 @@ const dns = require('dns');
 const os = require('os');
 const logger = require('./logger');
 
+if (process.env.DNS_SERVERS) {
+    dns.setServers([process.env.DNS_SERVERS]);
+}
+
 const { version } = require('../package.json');
 
 const { common } = require('./config');
