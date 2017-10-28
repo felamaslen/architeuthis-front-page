@@ -152,7 +152,7 @@ function getUPSStatusRaw() {
         }
 
         if (process.env.ONLY_CACHE === 'true') {
-            return resolve({});
+            return resolve({ fromCache: false, data: '' });
         }
 
         try {
