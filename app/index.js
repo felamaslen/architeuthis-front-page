@@ -5,6 +5,7 @@ const os = require('os');
 const logger = require('./logger');
 
 if (process.env.DNS_SERVERS) {
+    logger('info', 'setting dns servers to', process.env.DNS_SERVERS);
     dns.setServers([process.env.DNS_SERVERS]);
 }
 
