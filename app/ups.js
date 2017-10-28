@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
+const logger = require('./logger');
 
 const config = require('./config');
 
@@ -87,11 +88,15 @@ function getUPSCacheExists() {
     return new Promise((resolve, reject) => {
         fs.open(APCACCESS_CACHE_FILE, 'r', err => {
             if (err) {
+                logger('info', 'Couldn\'t access UPS cache file:', err);
+
                 return resolve(false);
             }
 
             return fs.stat(APCACCESS_CACHE_FILE, (statErr, stats) => {
                 if (statErr) {
+                    logger('error', 'Couldn\'t stat UPS cache file', statErr);
+
                     return reject(statErr);
                 }
 
@@ -121,6 +126,8 @@ function runUPSStatusCommand() {
         });
 
         const rejectWithError = err => {
+            logger('error', 'Error running UPS command', err);
+
             clearTimeout(timeout);
 
             reject(err);
@@ -144,6 +151,8 @@ function getUPSStatusRaw() {
         if (upsCacheExists) {
             return fs.readFile(APCACCESS_CACHE_FILE, 'utf8', (err, data) => {
                 if (err) {
+                    logger('error', 'Error reading UPS cache file', err);
+
                     return reject(err);
                 }
 
@@ -160,6 +169,8 @@ function getUPSStatusRaw() {
 
             return fs.writeFile(APCACCESS_CACHE_FILE, data, err => {
                 if (err) {
+                    logger('error', 'Error writing to UPS cache file', err);
+
                     return reject(err);
                 }
 

@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const dns = require('dns');
 const os = require('os');
+const logger = require('./logger');
 
 const { version } = require('../package.json');
 
@@ -15,6 +16,8 @@ function getClientHostname(req) {
     return new Promise(resolve => {
         dns.reverse(clientIpRaw, (err, hostnames) => {
             if (err) {
+                logger('warn', 'DNS reverse lookup failed for', clientIpRaw, err);
+
                 return resolve(clientIpRaw);
             }
 
@@ -44,7 +47,7 @@ function run() {
             res.json({ upsStatus });
         }
         catch (err) {
-            console.log('Error getting UPS status:', err);
+            logger('error', 'Error getting UPS status:', err);
 
             res.status(500)
                 .json({ status: 'Error getting UPS status' });
