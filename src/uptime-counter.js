@@ -23,6 +23,37 @@ function getClockStatus(timeMS) {
         .reverse();
 }
 
+function uptimeFormat(timeMS) {
+    const seconds = Math.floor(timeMS / 1000);
+
+    const abbrev = [
+        ['day', 86400],
+        ['hour', 3600],
+        ['min', 60],
+        ['sec', 1]
+    ];
+
+    const timeString = abbrev
+        .reduce(({ text, remaining }, [str, secs]) => {
+            const numOfThisCategory = Math.floor(remaining / secs);
+
+            if (numOfThisCategory) {
+                const plural = numOfThisCategory === 1
+                    ? str
+                    : `${str}s`;
+
+                text.push(`${numOfThisCategory} ${plural}`);
+            }
+
+            return { text, remaining: remaining % secs };
+
+        }, { text: [], remaining: seconds })
+        .text
+        .join(', ');
+
+    return `Up ${timeString}`;
+}
+
 export default class UptimeCounter extends Component {
     constructor(props) {
         super(props);
@@ -98,7 +129,10 @@ export default class UptimeCounter extends Component {
                 return <span className={classes} />;
             });
 
-        return <div className="uptime-counter">{digits}</div>;
+        return <div className="uptime-outer">
+            <div className="uptime-counter">{digits}</div>
+            <div className="uptime-string">{uptimeFormat(this.state.uptimeMS)}</div>
+        </div>;
     }
 }
 

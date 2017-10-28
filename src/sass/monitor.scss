@@ -3,7 +3,7 @@
 
 .uptime-counter {
     display: flex;
-    margin: 0 0 2em 0;
+    margin: 1em 0;
 
     .clock-digit {
         display: inline-block;
@@ -29,6 +29,10 @@
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.8);
         }
     }
+}
+
+.uptime-string {
+    margin: 1em 0;
 }
 
 @media screen and (max-width: 420px) {
