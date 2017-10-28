@@ -2,7 +2,7 @@ import { Component, h } from 'preact';
 import classNames from 'classnames';
 import axios from 'axios';
 
-const TIMER_RESOLUTION = 50;
+const TIMER_RESOLUTION = 250;
 const TIME_BETWEEN_SYNC = 10000;
 const CLOCK_DIGITS = 30;
 

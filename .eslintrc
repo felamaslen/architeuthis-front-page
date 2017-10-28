@@ -7,21 +7,16 @@
         "mocha": true
     },
     "extends": [
-        "eslint:recommended",
+        "eslint:standard",
         "standard-preact"
     ],
     "parserOptions": {
         "ecmaVersion": 8,
         "ecmaFeatures": {
-            "experimentalObjectRestSpread": true,
-            "jsx": true,
-            "react": true
+            "experimentalObjectRestSpread": true
         },
         "sourceType": "module"
     },
-    "plugins": [
-        "react"
-    ],
     "rules": {
         "accessor-pairs": "error",
         "array-bracket-spacing": [
