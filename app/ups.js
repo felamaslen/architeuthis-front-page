@@ -88,8 +88,6 @@ function getUPSCacheExists() {
     return new Promise((resolve, reject) => {
         fs.open(APCACCESS_CACHE_FILE, 'r', err => {
             if (err) {
-                logger('info', 'Couldn\'t access UPS cache file:', err);
-
                 return resolve(false);
             }
 
@@ -116,8 +114,6 @@ function runUPSStatusCommand() {
 
         const args = (process.env.UPS_COMMAND || 'apcaccess').split(' ');
 
-        logger('info', 'runUPSStatusCommand', ...args);
-
         const command = args.shift();
 
         const apc = spawn(command, args);
@@ -129,8 +125,6 @@ function runUPSStatusCommand() {
         }, TIMEOUT_COMMAND);
 
         apc.stdout.on('data', data => {
-            logger('info', 'UPS command output:', data);
-
             output += data;
         });
 
@@ -158,8 +152,6 @@ function getUPSStatusRaw() {
         const upsCacheExists = await getUPSCacheExists();
 
         if (upsCacheExists) {
-            logger('info', 'Trying to get UPS data from cache');
-
             return fs.readFile(APCACCESS_CACHE_FILE, 'utf8', (err, data) => {
                 if (err) {
                     logger('error', 'Error reading UPS cache file', err);
@@ -172,8 +164,6 @@ function getUPSStatusRaw() {
         }
 
         if (process.env.ONLY_CACHE === 'true') {
-            logger('info', 'ONLY_CACHE set; not getting new UPS data');
-
             return resolve({ onlyCacheFail: true, data: '' });
         }
 
