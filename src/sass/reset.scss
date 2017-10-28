@@ -1,6 +1,7 @@
 body {
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
     text-align: center;
     color: $color-primary;
     background: $color-bg;
@@ -8,5 +9,9 @@ body {
 
 header, footer {
     font-family: arial, helvetica, sans-serif;
+}
+
+a:link {
+    cursor: pointer;
 }
 
