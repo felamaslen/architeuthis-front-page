@@ -1,0 +1,55 @@
+.monitor-outer {
+}
+
+.uptime-counter {
+    display: flex;
+    margin: 1em 0;
+
+    .clock-digit {
+        display: inline-block;
+        position: relative;
+        flex-grow: 1;
+        flex-basis: 1em;
+        width: 12px;
+        height: 12px;
+        margin: 1px;
+
+        &:after {
+            display: block;
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 100%;
+            background: rgb(41, 42, 43);
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.4);
+        }
+        &.on:after {
+            background: rgb(0, 255, 90);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.8);
+        }
+    }
+}
+
+.uptime-string {
+    margin: 1em 0;
+}
+
+@media screen and (max-width: 420px) {
+    .uptime-counter {
+        .clock-digit {
+            width: 8px;
+            height: 8px;
+        }
+    }
+}
+@media screen and (min-width: 800px) {
+    .uptime-counter {
+        .clock-digit {
+            width: 24px;
+            height: 24px;
+        }
+    }
+}
+
+

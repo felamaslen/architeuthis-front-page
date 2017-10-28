@@ -1,1 +1,6 @@
 node_modules
+assets
+.env
+services.json.example
+src/images/sprite
+app/.apcaccess.cache

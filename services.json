@@ -1,0 +1,64 @@
+{
+    "services": [
+        {
+            "link": "https://cacti.bristol.fela.london",
+            "title-short": "cacti",
+            "title": "Cacti",
+            "description": "Cacti system monitoring"
+        },
+        {
+            "link": "https://bristol.fela.london/ntop",
+            "title-short": "ntop",
+            "title": "nTop",
+            "description": "Network monitoring"
+        },
+        {
+            "link": "https://bristol.fela.london/torrents",
+            "title-short": "torrents",
+            "title": "&mu;Torrent",
+            "description": "Torrent downloads"
+        },
+        {
+            "link": "https://vbox.bristol.fela.london",
+            "title-short": "vm",
+            "title": "VirtualBox",
+            "description": "Virtual machines"
+        },
+        {
+            "link": "https://sync.bristol.fela.london",
+            "title-short": "syncthing",
+            "title": "Syncthing",
+            "description": "File synchronisation"
+        }
+    ],
+    "logos": [
+        {
+            "link": "http://intel.com",
+            "title": "intel"
+        },
+        {
+            "link": "http://asrock.com",
+            "title": "asrock"
+        },
+        {
+            "link": "http://kingston.com",
+            "title": "kingston"
+        },
+        {
+            "link": "http://noctua.at",
+            "title": "noctua"
+        },
+        {
+            "link": "http://www.wdc.com",
+            "title": "wd"
+        },
+        {
+            "link": "https://www.kernel.org",
+            "title": "linux"
+        },
+        {
+            "link": "http://www.ubuntu.com",
+            "title": "ubuntu"
+        }
+    ]
+}
