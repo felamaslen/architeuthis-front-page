@@ -104,6 +104,10 @@ server {
     allow 2001:470:198d:1::/64;
     deny all;
   }
+  location /torrents {
+    proxy_pass http://127.0.0.1:8085/gui;
+  }
+  rewrite ^/gui\/(.*)$ /torrents/$1 permanent;
 
   error_page 404 /404-error.html;
   location /404-error.html {
