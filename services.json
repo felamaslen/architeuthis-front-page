@@ -1,31 +1,31 @@
 {
     "services": [
         {
-            "link": "https://cacti.bristol.fela.london",
+            "link": "https://cacti.fela.space",
             "title-short": "cacti",
             "title": "Cacti",
             "description": "Cacti system monitoring"
         },
         {
-            "link": "https://bristol.fela.london/ntop",
+            "link": "https://ntop.fela.space",
             "title-short": "ntop",
             "title": "nTop",
             "description": "Network monitoring"
         },
         {
-            "link": "https://bristol.fela.london/torrents",
+            "link": "https://www.fela.space/torrents",
             "title-short": "torrents",
             "title": "&mu;Torrent",
             "description": "Torrent downloads"
         },
         {
-            "link": "https://vbox.bristol.fela.london",
+            "link": "https://vbox.fela.space",
             "title-short": "vm",
             "title": "VirtualBox",
             "description": "Virtual machines"
         },
         {
-            "link": "https://sync.bristol.fela.london",
+            "link": "https://sync.fela.space",
             "title-short": "syncthing",
             "title": "Syncthing",
             "description": "File synchronisation"
