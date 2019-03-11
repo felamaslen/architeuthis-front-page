@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 
 import NavBoxSpecs from './nav-box-specs';
 import NavBoxServices from './nav-box-services';
 import NavBoxUPS from './nav-box-ups';
 
 export default class NavBox extends Component {
+    static propTypes = {
+        selected: PropTypes.string,
+        hidden: PropTypes.bool
+    };
     getInnerComponent(index) {
         if (index === 'specs') {
             return <NavBoxSpecs />;
@@ -19,7 +24,9 @@ export default class NavBox extends Component {
 
         return null;
     }
-    render({ selected, hidden }) {
+    render() {
+        const { selected, hidden } = this.props;
+
         const className = classNames({
             'nav-box-outer': true,
             hidden

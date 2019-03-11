@@ -25,7 +25,13 @@ export default class NavBoxSpecs extends Component {
             const onActivate = () => this.setState({ selected: key, hidden: false });
             const onDeactivate = () => this.setState({ hidden: true });
 
-            return <li className="spec" onMouseOver={onActivate} onMouseOut={onDeactivate}>{spec}</li>;
+            return <li key={spec}
+                className="spec"
+                onMouseOver={onActivate}
+                onMouseOut={onDeactivate}>
+
+                {spec}
+            </li>;
         });
 
         const specsPreviewClass = classNames({
