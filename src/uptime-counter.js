@@ -22,12 +22,12 @@ const getBinaryClock = seconds => new Array(CLOCK_DIGITS)
     .digits
     .reverse();
 
-function getClockStatus(uptime, now) {
-    const uptimeSeconds = Math.floor(uptime / 1000);
-    const allTimeSeconds = Math.floor(now / 1000) - INSTALL_TIME;
+function getClockStatus(uptime, now, lastUpdateTime) {
+    const uptimeNow = uptime + now - lastUpdateTime;
+    const allTime = now - INSTALL_TIME;
 
-    const clockUptime = getBinaryClock(uptimeSeconds);
-    const clockAllTime = getBinaryClock(allTimeSeconds);
+    const clockUptime = getBinaryClock(uptimeNow);
+    const clockAllTime = getBinaryClock(allTime);
 
     return clockUptime.map((on, index) => ({
         on,
@@ -35,9 +35,7 @@ function getClockStatus(uptime, now) {
     }));
 }
 
-function uptimeFormat(timeMS) {
-    const seconds = Math.floor(timeMS / 1000);
-
+function uptimeFormat(uptime) {
     const abbrev = [
         ['day', 86400],
         ['hour', 3600],
@@ -59,7 +57,7 @@ function uptimeFormat(timeMS) {
 
             return { text, remaining: remaining % secs };
 
-        }, { text: [], remaining: seconds })
+        }, { text: [], remaining: uptime })
         .text
         .join(', ');
 
@@ -67,25 +65,17 @@ function uptimeFormat(timeMS) {
 }
 
 export default function UptimeCounter() {
-    const [uptime, setUptime] = useState(globalConfig
-        ? globalConfig.uptime * 1000
-        : 0
-    );
+    const getNow = useCallback(() => Math.floor(Date.now() / 1000));
+    const [now, setNow] = useState(getNow());
 
-    const now = useMemo(() => Date.now(), [uptime]);
+    const [uptime, setUptime] = useState(globalConfig.uptime || 0);
 
     const [lastUpdateTime, setLastUpdateTime] = useState(now);
-    const [lastServerUpdateTime, setLastServerUpdateTime] = useState(uptime
-        ? now
-        : 0
-    );
 
     const timer = useRef(null);
 
     const setTimer = useCallback(() => {
-        const timeDiff = Date.now() - lastUpdateTime;
-
-        setUptime(uptime + timeDiff);
+        setNow(getNow());
 
         timer.current = setTimeout(setTimer, TIMER_RESOLUTION);
     });
@@ -100,10 +90,11 @@ export default function UptimeCounter() {
         try {
             const { data: { uptime: uptimeSeconds } } = await axios.get('uptime');
 
-            setUptime(Number(uptimeSeconds) * 1000);
+            const newNow = getNow();
 
-            setLastUpdateTime(now);
-            setLastServerUpdateTime(now);
+            setUptime(uptimeSeconds);
+
+            setLastUpdateTime(newNow);
 
         } catch (err) {
             console.error('Error getting uptime', err);
@@ -111,13 +102,13 @@ export default function UptimeCounter() {
     });
 
     useEffect(() => {
-        if (!(uptime && now - lastServerUpdateTime <= TIME_BETWEEN_SYNC)) {
+        if (!(uptime && now - lastUpdateTime <= TIME_BETWEEN_SYNC)) {
             synchronise();
         }
 
     }, [uptime]);
 
-    const digits = getClockStatus(uptime, now)
+    const digits = getClockStatus(uptime, now, lastUpdateTime)
         .map(({ on, half }, index) => {
             const classes = classNames({
                 'clock-digit': true,
