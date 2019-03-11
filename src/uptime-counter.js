@@ -7,21 +7,32 @@ const TIMER_RESOLUTION = 250;
 const TIME_BETWEEN_SYNC = 10000;
 const CLOCK_DIGITS = 30;
 
-function getClockStatus(timeMS) {
-    const seconds = Math.floor(timeMS / 1000);
+const INSTALL_TIME = globalConfig.installTime || 0;
 
-    return new Array(CLOCK_DIGITS).fill(0)
-        .reduce(({ remaining, digits }) => {
-            const digitStatus = remaining % 2;
+const getBinaryClock = seconds => new Array(CLOCK_DIGITS)
+    .fill(0)
+    .reduce(({ remaining, digits }) => {
+        const digitStatus = remaining % 2;
 
-            return {
-                remaining: (remaining - digitStatus) / 2,
-                digits: [...digits, digitStatus]
-            };
+        return {
+            remaining: (remaining - digitStatus) / 2,
+            digits: [...digits, digitStatus]
+        };
+    }, { remaining: seconds, digits: [] })
+    .digits
+    .reverse();
 
-        }, { remaining: seconds, digits: [] })
-        .digits
-        .reverse();
+function getClockStatus(uptime, now) {
+    const uptimeSeconds = Math.floor(uptime / 1000);
+    const allTimeSeconds = Math.floor(now / 1000) - INSTALL_TIME;
+
+    const clockUptime = getBinaryClock(uptimeSeconds);
+    const clockAllTime = getBinaryClock(allTimeSeconds);
+
+    return clockUptime.map((on, index) => ({
+        on,
+        half: clockAllTime[index]
+    }));
 }
 
 function uptimeFormat(timeMS) {
@@ -106,10 +117,11 @@ export default function UptimeCounter() {
 
     }, [uptime]);
 
-    const digits = getClockStatus(uptime)
-        .map((on, index) => {
+    const digits = getClockStatus(uptime, now)
+        .map(({ on, half }, index) => {
             const classes = classNames({
                 'clock-digit': true,
+                half,
                 on
             });
 

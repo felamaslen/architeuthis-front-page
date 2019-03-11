@@ -10,7 +10,11 @@
         <% } %>
         <script>
         //<![CDATA[
-        var globalConfig={uptime:<%- uptime %>,ups:'<%- JSON.stringify(ups) %>'};
+        var globalConfig={
+            uptime:<%- uptime %>,
+            installTime:<%- constants.installTime %>,
+            ups:'<%- JSON.stringify(ups) %>'
+        };
         //]]>
         </script>
     </head>
