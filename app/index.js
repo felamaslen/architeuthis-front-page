@@ -118,7 +118,7 @@ function run() {
         }
     });
 
-    const getFavicon = (req, res) => res.sendFile(path.join(__dirname, '../assets/favicon.jpg'));
+    const getFavicon = (req, res) => res.sendFile(path.resolve(__dirname, '../src/images/favicon.jpg'));
 
     app.get('/favicon.ico', getFavicon);
     app.get('/favicon.jpg', getFavicon);

@@ -150,7 +150,7 @@ module.exports = (config = { __DEV__: process.env.NODE_ENV === 'development' }) 
             },
             {
                 test: /\.(png|jpg|wav|mp3|mp4)$/,
-                exclude: [/node_modules/, /favicon\.png/],
+                exclude: /node_modules/,
                 use: 'file-loader'
             },
             {
@@ -168,17 +168,6 @@ module.exports = (config = { __DEV__: process.env.NODE_ENV === 'development' }) 
                         }
                     }
                 ]
-            },
-            {
-                test: /favicon\.png/,
-                use: {
-                    loader: 'file-loader',
-                    options: {
-                        name: 'favicon.ico',
-                        path: assetPath,
-                        publicPath
-                    }
-                }
             }
         ]
     },

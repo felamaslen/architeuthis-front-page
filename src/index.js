@@ -4,7 +4,6 @@ import React from 'react';
 import { render } from 'react-dom';
 
 import './sass/index.scss';
-import './images/favicon.jpg';
 
 import UptimeCounter from './uptime-counter';
 
