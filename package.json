@@ -2,7 +2,7 @@
   "name": "architeuthis-front-page",
   "version": "1.0.0",
   "engines": {
-    "node": "8"
+    "node": "10"
   },
   "description": "Front page (mostly static) for Architeuthis server",
   "main": "index.js",
