@@ -1,4 +1,4 @@
-import { Component, h } from 'preact';
+import React, { Component } from 'react';
 import classNames from 'classnames';
 import axios from 'axios';
 

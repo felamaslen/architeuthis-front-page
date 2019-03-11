@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import React from 'react';
 
 export default () => <div className="nav-box-services">
     <h3>Services</h3>

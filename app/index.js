@@ -3,6 +3,7 @@ const path = require('path');
 const dns = require('dns');
 const os = require('os');
 const logger = require('./logger');
+const history = require('connect-history-api-fallback');
 
 if (process.env.DNS_SERVERS) {
     dns.setServers([process.env.DNS_SERVERS]);
@@ -10,7 +11,7 @@ if (process.env.DNS_SERVERS) {
 
 const { version } = require('../package.json');
 
-const { common } = require('./config');
+const getConfig = require('./config');
 
 const { getUPSStatus } = require('./ups');
 
@@ -32,7 +33,42 @@ function getClientHostname(req) {
 
 const getUptime = () => os.uptime();
 
+function setupClient(config, app) {
+    if (config.__WDS__) {
+        // eslint-disable-next-line global-require
+        const webpackConfig = require('../webpack.config')(config);
+
+        // eslint-disable-next-line global-require
+        const compiler = require('webpack')(webpackConfig);
+
+        const serverOptions = {
+            quiet: true,
+            noInfo: true,
+            publicPath: webpackConfig.output.publicPath,
+            hot: true,
+            host: '0.0.0.0',
+            disableHostCheck: true,
+            port: config.port
+        };
+
+        // eslint-disable-next-line global-require
+        const webpackHotMiddleware = require('webpack-hot-middleware')(compiler);
+
+        // eslint-disable-next-line global-require
+        const webpackDevMiddleware = require('webpack-dev-middleware')(compiler, serverOptions);
+
+        app.use(history());
+
+        app.use(webpackDevMiddleware);
+
+        app.use(webpackHotMiddleware);
+    } else {
+        app.use(express.static(path.resolve(__dirname, '../dist')));
+    }
+}
+
 function run() {
+    const config = getConfig();
     const app = express();
 
     app.set('views', path.join(__dirname, '../src/templates'));
@@ -69,11 +105,12 @@ function run() {
         }
         finally {
             res.render('index', {
+                __WDS__: config.__WDS__,
                 version,
                 clientIp,
                 uptime,
                 ups,
-                ...common
+                ...config.common
             });
         }
     });
@@ -83,7 +120,7 @@ function run() {
     app.get('/favicon.ico', getFavicon);
     app.get('/favicon.jpg', getFavicon);
 
-    app.use(express.static(path.join(__dirname, '../assets')));
+    setupClient(config, app);
 
     const port = process.env.PORT || 3000;
 

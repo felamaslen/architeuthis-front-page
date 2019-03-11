@@ -1,4 +1,7 @@
-import { h, render, Component } from 'preact';
+import '@babel/polyfill';
+
+import React from 'react';
+import { render } from 'react-dom';
 
 import './sass/index.scss';
 import './images/favicon.jpg';
@@ -6,6 +9,8 @@ import './images/favicon.jpg';
 import UptimeCounter from './uptime-counter';
 
 import Nav from './nav';
+
+import './sass/index.scss';
 
 render(<UptimeCounter />, document.getElementById('monitor'));
 

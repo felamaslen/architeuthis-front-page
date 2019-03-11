@@ -5,7 +5,9 @@
         <link rel="icon" type="image/jpeg" href="favicon.ico" />
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0" />
+        <% if (!__WDS__) { %>
         <link rel="stylesheet" href="style.css?v=<%= version %>" />
+        <% } %>
         <script>
         //<![CDATA[
         var globalConfig={uptime:<%- uptime %>,ups:'<%- JSON.stringify(ups) %>'};
