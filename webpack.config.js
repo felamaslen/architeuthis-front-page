@@ -189,9 +189,8 @@ module.exports = (config = { __DEV__: process.env.NODE_ENV === 'development' }) 
         ],
         alias: {
             'react-dom': '@hot-loader/react-dom',
-            sass: path.resolve(__dirname, 'app/client/sass'),
-            constants: path.resolve(__dirname, 'app/constants'),
-            client: path.resolve(__dirname, 'app/client')
+            sass: path.resolve(__dirname, 'src/sass'),
+            constants: path.resolve(__dirname, 'src/constants')
         }
     },
     optimization: {
