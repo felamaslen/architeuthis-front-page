@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const dns = require('dns');
 const os = require('os');
-const logger = require('./logger');
 const history = require('connect-history-api-fallback');
 
 if (process.env.DNS_SERVERS) {
@@ -12,16 +11,18 @@ if (process.env.DNS_SERVERS) {
 const { version } = require('../package.json');
 
 const getConfig = require('./config');
+const { getLogger } = require('./logger');
 
 const { getUPSStatus } = require('./ups');
 
-function getClientHostname(req) {
+function getClientHostname(logger, req) {
     const clientIpRaw = req.headers['x-forwarded-for'] || req.ip;
 
     return new Promise(resolve => {
         dns.reverse(clientIpRaw, (err, hostnames) => {
             if (err) {
-                logger('warn', 'DNS reverse lookup failed for', clientIpRaw, err);
+                logger.warn('DNS reverse lookup failed for %s', clientIpRaw);
+                logger.verbose('DNS error: %s', err.message);
 
                 return resolve(clientIpRaw);
             }
@@ -69,6 +70,8 @@ function setupClient(config, app) {
 
 function run() {
     const config = getConfig();
+    const logger = getLogger(config);
+
     const app = express();
 
     app.set('views', path.join(__dirname, '../src/templates'));
@@ -82,12 +85,11 @@ function run() {
 
     app.get('/ups-status', async (req, res) => {
         try {
-            const upsStatus = await getUPSStatus();
+            const upsStatus = await getUPSStatus(logger);
 
             res.json({ upsStatus });
-        }
-        catch (err) {
-            logger('error', 'Error getting UPS status:', err);
+        } catch (err) {
+            logger.error('Error getting UPS status: %s', err.message);
 
             res.status(500)
                 .json({ status: 'Error getting UPS status' });
@@ -95,15 +97,16 @@ function run() {
     });
 
     app.get('/', async (req, res) => {
-        const clientIp = await getClientHostname(req);
+        const clientIp = await getClientHostname(logger, req);
 
         const uptime = getUptime();
 
         let ups = {};
         try {
-            ups = await getUPSStatus();
-        }
-        finally {
+            ups = await getUPSStatus(logger);
+        } catch {
+            logger.warn('Rendering empty UPS info');
+        } finally {
             res.render('index', {
                 __WDS__: config.__WDS__,
                 version,
@@ -125,7 +128,7 @@ function run() {
     const port = process.env.PORT || 3000;
 
     app.listen(port, () => {
-        console.log('Server listening on port', port);
+        logger.info('Server listening on port %s', port);
     });
 }
 
