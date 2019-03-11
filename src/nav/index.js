@@ -13,7 +13,7 @@ export default function Nav() {
         setSelectedLink(link);
         setHidden(Boolean(!hidden && selectedLink === link));
 
-    }, [selectedLink]);
+    }, [selectedLink, hidden]);
 
     return (
         <div className="navbar-outer">
