@@ -85,7 +85,7 @@ function run() {
 
     app.get('/ups-status', async (req, res) => {
         try {
-            const upsStatus = await getUPSStatus(logger);
+            const upsStatus = await getUPSStatus(config, logger);
 
             res.json({ upsStatus });
         } catch (err) {
@@ -103,7 +103,7 @@ function run() {
 
         let ups = {};
         try {
-            ups = await getUPSStatus(logger);
+            ups = await getUPSStatus(config, logger);
         } catch {
             logger.warn('Rendering empty UPS info');
         } finally {

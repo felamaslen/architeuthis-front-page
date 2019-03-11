@@ -2,20 +2,18 @@ const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
 
-const config = require('./config');
-
 const APCACCESS_CACHE_FILE = path.join(__dirname, './.apcaccess.cache');
 
 const TIMEOUT_COMMAND = 5000;
 
-function processUPSValues({ data, ...rest }) {
+function processUPSValues(config, { data, ...rest }) {
     const propsRaw = data.split('\n')
         .map(line => line.match(/^([^\s]+).*?:\s*([^\s].*?)\s*$/))
         .filter(match => match && match.length > 1)
         .map(match => [match[1], match[2]])
         .reduce((obj, [key, prop]) => ({ ...obj, [key]: prop }), {});
 
-    const props = [
+    const upsProps = [
         {
             key: 'date',
             rawKey: 'DATE',
@@ -30,12 +28,11 @@ function processUPSValues({ data, ...rest }) {
             key: 'load',
             rawKey: 'LOADPCT',
             proc: value => {
-                const match = value.match(/^([0-9]+)/);
+                const [, loadPercent] = value.match(/^([0-9]+)/);
 
-                const loadPct = +(match[1]);
-                const loadWatts = loadPct * config.common.constants.upsCapacity / 100;
+                const loadWatts = loadPercent * config.common.constants.upsCapacity / 100;
 
-                return `${loadPct.toFixed(1)}% (${loadWatts.toFixed(1)}W)`;
+                return `${Number(loadPercent).toFixed(1)}% (${loadWatts.toFixed(1)}W)`;
             }
         },
         {
@@ -63,7 +60,9 @@ function processUPSValues({ data, ...rest }) {
             rawKey: 'CUMONBATT',
             proc: value => value
         }
-    ]
+    ];
+
+    const props = upsProps
         .reduce((obj, { key, rawKey, proc }) => {
             try {
                 const value = proc(propsRaw[rawKey]);
@@ -71,9 +70,8 @@ function processUPSValues({ data, ...rest }) {
                 obj[key] = value === null
                     ? '<not found>'
                     : value;
-            }
-            catch (err) {
-                obj[key] = '<not found>';
+            } catch {
+                obj[key] = '<error>';
             }
 
             return obj;
@@ -83,7 +81,7 @@ function processUPSValues({ data, ...rest }) {
     return { props, ...rest };
 }
 
-function getUPSCacheExists(logger) {
+function getUPSCacheExists(config, logger) {
     return new Promise((resolve, reject) => {
         fs.open(APCACCESS_CACHE_FILE, 'r', err => {
             if (err) {
@@ -146,9 +144,9 @@ function runUPSStatusCommand(logger) {
     });
 }
 
-function getUPSStatusRaw(logger) {
+function getUPSStatusRaw(config, logger) {
     return new Promise(async (resolve, reject) => {
-        const upsCacheExists = await getUPSCacheExists(logger);
+        const upsCacheExists = await getUPSCacheExists(config, logger);
 
         if (upsCacheExists) {
             return fs.readFile(APCACCESS_CACHE_FILE, 'utf8', (err, data) => {
@@ -184,12 +182,12 @@ function getUPSStatusRaw(logger) {
     });
 }
 
-function getUPSStatus(logger) {
+function getUPSStatus(config, logger) {
     return new Promise(async (resolve, reject) => {
         try {
-            const rawStatus = await getUPSStatusRaw(logger);
+            const rawStatus = await getUPSStatusRaw(config, logger);
 
-            const status = processUPSValues(rawStatus);
+            const status = processUPSValues(config, rawStatus);
 
             return resolve(status);
         } catch (err) {
