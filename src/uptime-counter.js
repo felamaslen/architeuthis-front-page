@@ -120,13 +120,13 @@ export default class UptimeCounter extends Component {
     }
     render() {
         const digits = getClockStatus(this.state.uptimeMS)
-            .map(on => {
+            .map((on, index) => {
                 const classes = classNames({
                     'clock-digit': true,
                     on
                 });
 
-                return <span className={classes} />;
+                return <span key={`digit-${index}`} className={classes} />;
             });
 
         return <div className="uptime-outer">
