@@ -1,6 +1,10 @@
 const { services, logos } = require('../services.json');
 
-module.exports = {
+module.exports = () => ({
+    __DEV__: process.env.NODE_ENV === 'development',
+    __PROD__: process.env.NODE_ENV === 'production',
+    __WDS__: process.env.NODE_ENV === 'development' && process.env.SKIP_CLIENT !== 'true',
+    port: Number(process.env.PORT) || 3000,
     common: {
         title: process.env.TITLE || 'Untitled Server',
         serverHostname: process.env.SERVER_HOSTNAME || 'example.com',
@@ -18,5 +22,5 @@ module.exports = {
     app: {
         timeoutCommand: 5000
     }
-};
+});
 

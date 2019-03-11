@@ -1,45 +1,47 @@
-import { h, Component } from 'preact';
+import React, { useState, useCallback } from 'react';
 import classNames from 'classnames';
 
-export default class NavBoxSpecs extends Component {
-    constructor(props) {
-        super(props);
+const SPECS = [
+    'CPU: Intel Celeron G1850 2.90GHz',
+    'RAM: Kingston 8GB ECC DDR3',
+    'HDD: WD Red 2TB (x2)',
+    'SSD: Kingston 120GB',
+    'PSU: 250W FlexATX PSU',
+    'Case: CFI A7879 Mini-ITX',
+    'Motherboard: ASRock E3C2224D2I'
+];
 
-        this.state = {
-            selected: -1,
-            hidden: true
-        };
-    }
-    render() {
-        const specs = [
-            'CPU: Intel Celeron G1850 2.90GHz',
-            'RAM: Kingston 8GB ECC DDR3',
-            'HDD: WD Red 2TB (x2)',
-            'SSD: Kingston 120GB',
-            'PSU: 250W FlexATX PSU',
-            'Case: CFI A7879 Mini-ITX',
-            'Motherboard: ASRock E3C2224D2I'
-        ];
+export default function NavBoxSpecs() {
+    const [selectedIndex, setSelectedIndex] = useState(-1);
+    const [hidden, setHidden] = useState(true);
 
-        const specsList = specs.map((spec, key) => {
-            const onActivate = () => this.setState({ selected: key, hidden: false });
-            const onDeactivate = () => this.setState({ hidden: true });
+    const specsPreviewClass = classNames('specs-preview', `spec-${selectedIndex}`, {
+        hidden
+    });
 
-            return <li className="spec" onMouseOver={onActivate} onMouseOut={onDeactivate}>{spec}</li>;
-        });
+    const makeOnActivate = useCallback(index => () => {
+        setSelectedIndex(index);
+        setHidden(false);
+    });
 
-        const specsPreviewClass = classNames({
-            [`specs-preview spec-${this.state.selected}`]: true,
-            hidden: this.state.hidden
-        });
+    const onDeactivate = useCallback(() => setHidden(true));
 
-        return <div className="nav-box-specs">
+    return (
+        <div className="nav-box-specs">
             <h3>Specs</h3>
             <ul className="nav-dropdown">
-                {specsList}
+                {SPECS.map((spec, index) => (
+                    <li key={spec}
+                        className="spec"
+                        onMouseOver={makeOnActivate(index)}
+                        onMouseOut={onDeactivate}>
+
+                        {spec}
+                    </li>
+                ))}
             </ul>
             <div className={specsPreviewClass} />
-        </div>;
-    }
+        </div>
+    );
 }
 

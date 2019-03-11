@@ -1,4 +1,5 @@
-import { Component, h } from 'preact';
+/* global globalConfig:false */
+import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import classNames from 'classnames';
 import axios from 'axios';
 
@@ -10,7 +11,7 @@ function getClockStatus(timeMS) {
     const seconds = Math.floor(timeMS / 1000);
 
     return new Array(CLOCK_DIGITS).fill(0)
-        .reduce(({ remaining, digits }, digit, index) => {
+        .reduce(({ remaining, digits }) => {
             const digitStatus = remaining % 2;
 
             return {
@@ -54,85 +55,72 @@ function uptimeFormat(timeMS) {
     return `Up ${timeString}`;
 }
 
-export default class UptimeCounter extends Component {
-    constructor(props) {
-        super(props);
+export default function UptimeCounter() {
+    const [uptime, setUptime] = useState(globalConfig
+        ? globalConfig.uptime * 1000
+        : 0
+    );
 
-        const now = Date.now();
+    const now = useMemo(() => Date.now(), [uptime]);
 
-        this.state = {
-            uptimeMS: globalConfig
-                ? globalConfig.uptime * 1000
-                : 0,
-            lastUpdateTime: now,
-            lastServerUpdateTime: now
-        };
+    const [lastUpdateTime, setLastUpdateTime] = useState(now);
+    const [lastServerUpdateTime, setLastServerUpdateTime] = useState(uptime
+        ? now
+        : 0
+    );
 
-        this.timer = null;
-    }
-    updateUptime(uptimeMS, fromServer = false) {
-        clearTimeout(this.timer);
+    const timer = useRef(null);
 
-        const lastUpdateTime = Date.now();
+    const setTimer = useCallback(() => {
+        const timeDiff = Date.now() - lastUpdateTime;
 
-        let lastServerUpdateTime = this.state.lastServerUpdateTime;
-        if (fromServer) {
-            lastServerUpdateTime = lastUpdateTime;
-        }
+        setUptime(uptime + timeDiff);
 
-        this.setState({
-            uptimeMS,
-            lastUpdateTime,
-            lastServerUpdateTime
-        });
+        timer.current = setTimeout(setTimer, TIMER_RESOLUTION);
+    });
 
-        this.timer = setTimeout(() => this.setTimer(), TIMER_RESOLUTION);
-    }
-    async synchronise() {
+    useEffect(() => {
+        setTimer();
+
+        return () => clearTimeout(timer.current);
+    }, []);
+
+    const synchronise = useCallback(async () => {
         try {
-            const response = await axios.get('uptime')
-            const uptime = Number(response.data.uptime) * 1000;
+            const { data: { uptime: uptimeSeconds } } = await axios.get('uptime');
 
-            this.updateUptime(uptime, true);
-        }
-        catch (err) {
+            setUptime(Number(uptimeSeconds) * 1000);
+
+            setLastUpdateTime(now);
+            setLastServerUpdateTime(now);
+
+        } catch (err) {
             console.error('Error getting uptime', err);
         }
-    }
-    setTimer() {
-        const now = Date.now();
+    });
 
-        if (now - this.state.lastServerUpdateTime > TIME_BETWEEN_SYNC) {
-            this.synchronise();
+    useEffect(() => {
+        if (!(uptime && now - lastServerUpdateTime <= TIME_BETWEEN_SYNC)) {
+            synchronise();
         }
 
-        const timeDiff = now - this.state.lastUpdateTime;
+    }, [uptime]);
 
-        this.updateUptime(this.state.uptimeMS + timeDiff);
-    }
-    componentDidMount() {
-        if (this.state.uptimeMS) {
-            this.setTimer();
-        }
-        else {
-            this.synchronise();
-        }
-    }
-    render() {
-        const digits = getClockStatus(this.state.uptimeMS)
-            .map(on => {
-                const classes = classNames({
-                    'clock-digit': true,
-                    on
-                });
-
-                return <span className={classes} />;
+    const digits = getClockStatus(uptime)
+        .map((on, index) => {
+            const classes = classNames({
+                'clock-digit': true,
+                on
             });
 
-        return <div className="uptime-outer">
+            return <span key={`digit-${index}`} className={classes} />;
+        });
+
+    return (
+        <div className="uptime-outer">
             <div className="uptime-counter">{digits}</div>
-            <div className="uptime-string">{uptimeFormat(this.state.uptimeMS)}</div>
-        </div>;
-    }
+            <div className="uptime-string">{uptimeFormat(uptime)}</div>
+        </div>
+    );
 }
 

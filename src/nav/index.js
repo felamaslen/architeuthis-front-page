@@ -1,46 +1,42 @@
-import { Component, h } from "preact";
+import React, { useState, useCallback } from 'react';
 import classNames from 'classnames';
 
 import NavBox from './nav-box';
 
-export default class Nav extends Component {
-    constructor(props) {
-        super(props);
+import { LINKS } from 'constants/links';
 
-        this.state = {
-            selected: null,
-            hidden: true
-        };
-    }
-    render() {
-        const links = ['specs', 'services', 'ups'];
+export default function Nav() {
+    const [selectedLink, setSelectedLink] = useState(null);
+    const [hidden, setHidden] = useState(true);
 
-        const navLinks = links.map(link => {
-            const selected = this.state.selected === link;
+    const makeOnActivate = useCallback(link => () => {
+        setSelectedLink(link);
+        setHidden(Boolean(!hidden && selectedLink === link));
 
-            const className = classNames({
-                [`nav-link nav-link-${link}`]: true,
-                selected: selected && !this.state.hidden,
-            });
+    }, [selectedLink]);
 
-            const onActivate = () => this.setState({
-                selected: link,
-                hidden: !this.state.hidden && selected
-            });
-
-            return <li key={link} className={className} onMouseDown={onActivate}>
-                <a>{link}</a>
-            </li>;
-        });
-
-        return <div className="navbar-outer">
+    return (
+        <div className="navbar-outer">
             <div className="nav-links-outer">
                 <ul className="nav-links">
-                    {navLinks}
+                    {LINKS.map(link => {
+                        const className = classNames('nav-link', `nav-link-${link}`, {
+                            selected: selectedLink === link && !hidden
+                        });
+
+                        return (
+                            <li key={link}
+                                className={className}
+                                onMouseDown={makeOnActivate(link)}
+                            >
+                                <a>{link}</a>
+                            </li>
+                        );
+                    })}
                 </ul>
             </div>
-            <NavBox selected={this.state.selected} hidden={this.state.hidden} />
-        </div>;
-    }
+            <NavBox selectedLink={selectedLink} hidden={hidden} />
+        </div>
+    );
 }
 
