@@ -18,7 +18,7 @@ const { getUPSStatus } = require('./ups');
 function getClientHostname(logger, req) {
     const clientIpRaw = req.headers['x-forwarded-for'] || req.ip;
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         dns.reverse(clientIpRaw, (err, hostnames) => {
             if (err) {
                 logger.warn('DNS reverse lookup failed for %s', clientIpRaw);
@@ -74,6 +74,10 @@ function run() {
 
     const app = express();
 
+    app.get('/health', (req, res) => {
+        res.send('ok');
+    });
+
     app.set('views', path.join(__dirname, '../src/templates'));
     app.set('view engine', 'ejs');
 
@@ -91,8 +95,7 @@ function run() {
         } catch (err) {
             logger.error('Error getting UPS status: %s', err.message);
 
-            res.status(500)
-                .json({ status: 'Error getting UPS status' });
+            res.status(500).json({ status: 'Error getting UPS status' });
         }
     });
 
@@ -118,7 +121,8 @@ function run() {
         }
     });
 
-    const getFavicon = (req, res) => res.sendFile(path.resolve(__dirname, '../src/images/favicon.jpg'));
+    const getFavicon = (req, res) =>
+        res.sendFile(path.resolve(__dirname, '../src/images/favicon.jpg'));
 
     app.get('/favicon.ico', getFavicon);
     app.get('/favicon.jpg', getFavicon);
@@ -135,4 +139,3 @@ function run() {
 module.exports = {
     run
 };
-
