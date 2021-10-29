@@ -77,13 +77,13 @@ spec:
                       initialDelaySeconds: 5
                       periodSeconds: 5
                       httpGet:
-                          path: /health
+                          path: /api/health
                           port: 8080
                   readinessProbe:
                       initialDelaySeconds: 5
                       periodSeconds: 5
                       httpGet:
-                          path: /health
+                          path: /api/health
                           port: 8080
             volumes:
                 - name: architeuthis-front-page-pv
