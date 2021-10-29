@@ -12,8 +12,6 @@ const { version } = require('../package.json');
 const getConfig = require('./config');
 const { getLogger } = require('./logger');
 
-const { getUPSStatus } = require('./ups');
-
 function getClientHostname(logger, req) {
     const clientIpRaw = req.headers['x-forwarded-for'] || req.ip;
 
