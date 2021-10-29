@@ -28,7 +28,7 @@ export const NavBox = styled.div<{
             : undefined};
 
     ul {
-        margin: 0;
+        margin-top: 0;
         padding: 0;
         list-style: none;
     }

@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
+import { rem } from 'polished';
 
 export const NavDropdown = styled.ul`
     display: flex;
-    margin-bottom: 1em;
+    margin-bottom: ${rem(16)};
     flex-flow: column;
 
     li {
