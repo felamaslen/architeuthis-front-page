@@ -6,7 +6,7 @@ import styles from '../styles/Home.module.css';
 const Home: NextPage = () => (
     <div>
         <Head>
-            <title>Architeuthis</title>
+            <title>{process.env.NEXT_PUBLIC_TITLE}</title>
             <meta charSet="utf-8" />
             <link rel="icon" href="/favicon.ico" />
         </Head>
