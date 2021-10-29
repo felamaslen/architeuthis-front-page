@@ -1,19 +1,23 @@
 import dns from 'dns';
+import fse from 'fs-extra';
 import type { IncomingMessage } from 'http';
+import path from 'path';
+
 import type { NextPage, NextPageContext } from 'next';
 import Head from 'next/head';
-import { ContainerOuter, Header, Nav } from '../components';
-import { AppLogo } from '../components/AppLogo';
+import { AppLogo, ContainerOuter, Footer, Header, Nav } from '../components';
 import { UptimeCounter } from '../components/UptimeCounter';
 import { logger } from '../shared/logger';
 import { getSystemUptime } from '../shared/uptime';
 
 type Props = {
     clientHostname: string;
+    services: Parameters<typeof Footer>[0]['services'];
+    logos: Parameters<typeof Footer>[0]['logos'];
     uptime: number;
 };
 
-const Home: NextPage<Props> = ({ clientHostname, uptime }) => (
+const Home: NextPage<Props> = ({ clientHostname, logos, services, uptime }) => (
     <>
         <Head>
             <title>{process.env.NEXT_PUBLIC_TITLE}</title>
@@ -23,6 +27,7 @@ const Home: NextPage<Props> = ({ clientHostname, uptime }) => (
             <Header clientHostname={clientHostname} />
             <UptimeCounter initialUptime={uptime} />
             <AppLogo />
+            <Footer logos={logos} services={services} />
         </ContainerOuter>
     </>
 );
@@ -51,7 +56,17 @@ async function getClientHostname(req: IncomingMessage | undefined): Promise<stri
 export async function getServerSideProps(ctx: NextPageContext): Promise<{ props: Props }> {
     const clientHostname = await getClientHostname(ctx.req);
     const uptime = getSystemUptime();
-    return { props: { clientHostname, uptime } };
+
+    const servicesJsonString = await fse.readFile(
+        path.resolve(__dirname, '../../../shared/services.json'),
+        'utf8',
+    );
+    const { logos, services } = JSON.parse(servicesJsonString) as {
+        services: Props['services'];
+        logos: Props['logos'];
+    };
+
+    return { props: { clientHostname, logos, services, uptime } };
 }
 
 export default Home;

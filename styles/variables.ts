@@ -5,3 +5,8 @@ export const colors = {
     on: rgb(0, 255, 90),
     primary: rgb(201, 201, 201),
 };
+
+export const sizes = {
+    service: 64,
+    brand: 32,
+};
