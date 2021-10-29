@@ -12,7 +12,7 @@ export type Props = {
 const BoxComponents: Record<Links, React.FC> = {
     [Links.Specs]: NavBoxSpecs,
     [Links.Services]: NavBoxServices,
-    [Links.UPS]: NavBoxUPS
+    [Links.UPS]: NavBoxUPS,
 };
 
 export const BoxComponent: React.FC<{
