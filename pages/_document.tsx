@@ -4,7 +4,7 @@ import Document, {
     Main,
     NextScript,
     DocumentInitialProps,
-    DocumentContext
+    DocumentContext,
 } from 'next/document';
 import * as React from 'react';
 import { renderStatic } from '../shared/renderer';
@@ -24,7 +24,7 @@ export default class AppComponent extends Document {
                         dangerouslySetInnerHTML={{ __html: css }}
                     />
                 </>
-            )
+            ),
         };
     }
 
