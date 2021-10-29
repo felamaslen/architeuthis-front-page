@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 import * as Styled from './NavBoxSpecs.styles';
 import { Specs } from './NavBoxSpecs.types';
