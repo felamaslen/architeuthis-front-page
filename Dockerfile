@@ -1,6 +1,6 @@
 FROM node:lts-alpine
 
-RUN apk update && apk add python make g++
+RUN apk update && apk add python3 make g++
 
 WORKDIR /code
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup && chown appuser:appgroup /code
