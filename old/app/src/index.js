@@ -31,10 +31,6 @@ function getClientHostname(logger, req) {
 
 const getUptime = () => os.uptime();
 
-function setupClient(app) {
-    app.use(express.static(path.resolve(__dirname, '../../client/static')));
-}
-
 function run() {
     const config = getConfig();
     const logger = getLogger(config);
@@ -68,14 +64,7 @@ function run() {
 
         const uptime = getUptime();
 
-        let ups = {};
-        try {
-            ups = await getUPSStatus(config, logger);
-        } catch {
-            logger.warn('Rendering empty UPS info');
-        } finally {
             res.render('index', {
-                __WDS__: config.__WDS__,
                 version,
                 clientIp,
                 uptime,
@@ -83,20 +72,6 @@ function run() {
                 ...config.common
             });
         }
-    });
-
-    const getFavicon = (_, res) =>
-        res.sendFile(path.resolve(__dirname, '../src/images/favicon.jpg'));
-
-    app.get('/favicon.ico', getFavicon);
-    app.get('/favicon.jpg', getFavicon);
-
-    setupClient(app);
-
-    const port = process.env.PORT || 3000;
-
-    app.listen(port, () => {
-        logger.info('Server listening on port %s', port);
     });
 }
 

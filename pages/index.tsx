@@ -1,18 +1,52 @@
-import type { NextPage } from 'next';
+import dns from 'dns';
+import type { IncomingMessage } from 'http';
+import type { NextPage, NextPageContext } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
-import { ContainerOuter, Nav } from '../components';
+import { ContainerOuter, Header, Nav } from '../components';
+import { logger } from '../shared/logger';
 
-const Home: NextPage = () => (
+type Props = {
+    clientHostname: string;
+};
+
+const Home: NextPage<Props> = ({ clientHostname }) => (
     <>
         <Head>
             <title>{process.env.NEXT_PUBLIC_TITLE}</title>
         </Head>
         <ContainerOuter>
             <Nav />
+            <Header clientHostname={clientHostname} />
         </ContainerOuter>
     </>
 );
+
+async function getClientHostname(req: IncomingMessage | undefined): Promise<string> {
+    const clientIps = req?.headers['x-real-ip'] ?? req?.socket.remoteAddress;
+    const clientIp = Array.isArray(clientIps) ? clientIps[0] : clientIps;
+
+    if (!clientIp) {
+        return '<unknown>';
+    }
+
+    return new Promise<string>((resolve) => {
+        dns.reverse(clientIp, (err, hostnames) => {
+            if (err) {
+                logger.warn('DNS reverse lookup failed for %s', clientIp);
+                logger.verbose('DNS error: %s', err.message);
+                resolve(clientIp);
+            } else {
+                resolve(hostnames[0] ?? clientIp);
+            }
+        });
+    });
+}
+
+export async function getServerSideProps(ctx: NextPageContext): Promise<{ props: Props }> {
+    const clientHostname = await getClientHostname(ctx.req);
+    return { props: { clientHostname } };
+}
 
 export default Home;
 

@@ -196,7 +196,7 @@ async function getUPSStatus(): Promise<UPS> {
 export default async function handler(
     _: NextApiRequest,
     res: NextApiResponse<UPS | { error: string }>,
-) {
+): Promise<void> {
     try {
         const upsStatus = await getUPSStatus();
         res.status(200).json(upsStatus);
