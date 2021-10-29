@@ -2,7 +2,7 @@ import { Links } from '../shared/links';
 import * as Styled from './NavBox.styles';
 import { NavBoxServices } from './NavBoxServices';
 import { NavBoxSpecs } from './NavBoxSpecs';
-import { NavBoxUPS } from './NavBoxUPS';
+import { NavBoxUPS, UPSContext, useUPS } from './NavBoxUPS';
 
 export type Props = {
     selectedLink: Links | null;
@@ -23,13 +23,16 @@ export const BoxComponent: React.FC<{
 };
 
 export const NavBox: React.FC<Props> = ({ selectedLink, hidden }) => {
+    const upsHook = useUPS();
     return (
-        <Styled.NavBox isHidden={hidden}>
-            <Styled.Box>
-                <Styled.Inner>
-                    {!!selectedLink && <BoxComponent selectedLink={selectedLink} />}
-                </Styled.Inner>
-            </Styled.Box>
-        </Styled.NavBox>
+        <UPSContext.Provider value={upsHook}>
+            <Styled.NavBox isHidden={hidden}>
+                <Styled.Box>
+                    <Styled.Inner>
+                        {!!selectedLink && <BoxComponent selectedLink={selectedLink} />}
+                    </Styled.Inner>
+                </Styled.Box>
+            </Styled.NavBox>
+        </UPSContext.Provider>
     );
 };

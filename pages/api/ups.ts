@@ -3,9 +3,9 @@ import fse from 'fs-extra';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { config } from '../../shared/config';
-import { UPS } from '../../shared/ups/types';
 import { logger } from '../../shared/logger';
 import { spawn } from 'child_process';
+import { initialUPS, UPS } from '../../shared/ups';
 
 const APCACCESS_CACHE_FILE = path.join(__dirname, '../../.apcaccess.cache');
 
@@ -86,8 +86,14 @@ function processUPSValues({ data }: UPSStatusRaw): UPS {
     };
     const processTimeOnBattery: RawProcessor<'timeOnBatterySeconds'> = {
         key: 'timeOnBatterySeconds',
-        rawKey: 'CUMONBATT',
-        proc: (value) => Number(value),
+        rawKey: 'TONBATT',
+        proc: (value) => {
+            const match = value.match(/^(.*) Seconds$/);
+            if (!match) {
+                return null;
+            }
+            return Number(match[1]);
+        },
     };
 
     return [
@@ -99,26 +105,14 @@ function processUPSValues({ data }: UPSStatusRaw): UPS {
         processTransfers,
         processLastPowerFailure,
         processTimeOnBattery,
-    ].reduce<UPS>(
-        (obj, { key, rawKey, proc }) => {
-            try {
-                const value = proc?.(propsRaw[rawKey]) ?? propsRaw[rawKey];
-                return { ...obj, [key]: value };
-            } catch {
-                return { ...obj, [key]: null };
-            }
-        },
-        {
-            date: null,
-            model: null,
-            load: null,
-            charge: null,
-            backupTimeSeconds: null,
-            transfers: null,
-            lastPowerFailure: null,
-            timeOnBatterySeconds: null,
-        },
-    );
+    ].reduce<UPS>((obj, { key, rawKey, proc }) => {
+        try {
+            const value = proc?.(propsRaw[rawKey]) ?? propsRaw[rawKey];
+            return { ...obj, [key]: value };
+        } catch {
+            return { ...obj, [key]: null };
+        }
+    }, initialUPS);
 }
 
 async function getUPSCacheExists(): Promise<boolean> {
@@ -154,7 +148,6 @@ function runUPSStatusCommand(): Promise<string> {
 
         let output = '';
         const [command, ...args] = config.upsCommand.split(' ');
-        console.log({ command, args });
 
         try {
             const apc = spawn(command, args);
@@ -195,6 +188,7 @@ async function getUPSStatusRaw(): Promise<UPSStatusRaw> {
 
 async function getUPSStatus(): Promise<UPS> {
     const rawStatus = await getUPSStatusRaw();
+    logger.debug('Got UPS status %s', rawStatus.fromCache ? 'from cache' : 'fresh');
     const status = processUPSValues(rawStatus);
     return status;
 }
