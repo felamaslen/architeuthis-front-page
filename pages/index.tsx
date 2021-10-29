@@ -4,13 +4,16 @@ import type { NextPage, NextPageContext } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { ContainerOuter, Header, Nav } from '../components';
+import { UptimeCounter } from '../components/UptimeCounter';
 import { logger } from '../shared/logger';
+import { getSystemUptime } from '../shared/uptime';
 
 type Props = {
     clientHostname: string;
+    uptime: number;
 };
 
-const Home: NextPage<Props> = ({ clientHostname }) => (
+const Home: NextPage<Props> = ({ clientHostname, uptime }) => (
     <>
         <Head>
             <title>{process.env.NEXT_PUBLIC_TITLE}</title>
@@ -18,6 +21,7 @@ const Home: NextPage<Props> = ({ clientHostname }) => (
         <ContainerOuter>
             <Nav />
             <Header clientHostname={clientHostname} />
+            <UptimeCounter initialUptime={uptime} />
         </ContainerOuter>
     </>
 );
@@ -45,7 +49,8 @@ async function getClientHostname(req: IncomingMessage | undefined): Promise<stri
 
 export async function getServerSideProps(ctx: NextPageContext): Promise<{ props: Props }> {
     const clientHostname = await getClientHostname(ctx.req);
-    return { props: { clientHostname } };
+    const uptime = getSystemUptime();
+    return { props: { clientHostname, uptime } };
 }
 
 export default Home;
