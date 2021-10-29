@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { LINKS, LINK_UPS } from '../shared/links';
+import { Links } from '../shared/links';
 import * as Styled from './Nav.styles';
+import { NavBox } from './NavBox';
 
 export const Nav: React.FC = () => {
-    const [selectedLink, setSelectedLink] = useState<string | null>(null);
+    const [selectedLink, setSelectedLink] = useState<Links | null>(null);
     const [hidden, setHidden] = useState<boolean>(true);
 
     return (
@@ -11,14 +12,14 @@ export const Nav: React.FC = () => {
             <Styled.NavbarOuter>
                 <div>
                     <Styled.NavLinks>
-                        {LINKS.map((link) => (
+                        {Object.values(Links).map((link) => (
                             <Styled.NavLink
                                 key={link}
                                 onMouseDown={(): void => {
                                     setSelectedLink(link);
                                     setHidden(!hidden && selectedLink === link);
                                 }}
-                                isUPS={link === LINK_UPS}
+                                isUPS={link === Links.UPS}
                                 isSelected={selectedLink === link && !hidden}
                             >
                                 <a>{link}</a>
@@ -26,9 +27,7 @@ export const Nav: React.FC = () => {
                         ))}
                     </Styled.NavLinks>
                 </div>
-                {/*
                 <NavBox selectedLink={selectedLink} hidden={hidden} />
-                  */}
             </Styled.NavbarOuter>
         </Styled.Nav>
     );
