@@ -1,0 +1,30 @@
+{
+  "name": "architeuthis-front-page",
+  "version": "1.0.0",
+  "engines": {
+    "node": "14"
+  },
+  "description": "Front page (mostly static) for Architeuthis server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "NODE_ENV=development nodemon --inspect index.js",
+    "lint": "eslint src",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Fela Maslen",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "classnames": "^2.2.5",
+    "dateformat": "^3.0.2",
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "file-loader": "^1.1.5",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "dotenv": "^4.0.0",
+    "nodemon": "^1.18.10"
+  }
+}

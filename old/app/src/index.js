@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const dns = require('dns');
 const os = require('os');
-const history = require('connect-history-api-fallback');
 
 if (process.env.DNS_SERVERS) {
     dns.setServers([process.env.DNS_SERVERS]);
@@ -34,38 +33,8 @@ function getClientHostname(logger, req) {
 
 const getUptime = () => os.uptime();
 
-function setupClient(config, app) {
-    if (config.__WDS__) {
-        // eslint-disable-next-line global-require
-        const webpackConfig = require('../webpack.config')(config);
-
-        // eslint-disable-next-line global-require
-        const compiler = require('webpack')(webpackConfig);
-
-        const serverOptions = {
-            quiet: true,
-            noInfo: true,
-            publicPath: webpackConfig.output.publicPath,
-            hot: true,
-            host: '0.0.0.0',
-            disableHostCheck: true,
-            port: config.port
-        };
-
-        // eslint-disable-next-line global-require
-        const webpackHotMiddleware = require('webpack-hot-middleware')(compiler);
-
-        // eslint-disable-next-line global-require
-        const webpackDevMiddleware = require('webpack-dev-middleware')(compiler, serverOptions);
-
-        app.use(history());
-
-        app.use(webpackDevMiddleware);
-
-        app.use(webpackHotMiddleware);
-    } else {
-        app.use(express.static(path.resolve(__dirname, '../dist')));
-    }
+function setupClient(app) {
+    app.use(express.static(path.resolve(__dirname, '../../client/static')));
 }
 
 function run() {
@@ -74,20 +43,17 @@ function run() {
 
     const app = express();
 
-    app.get('/health', (req, res) => {
+    app.get('/health', (_, res) => {
         res.send('ok');
     });
 
-    app.set('views', path.join(__dirname, '../src/templates'));
-    app.set('view engine', 'ejs');
-
-    app.get('/uptime', (req, res) => {
+    app.get('/uptime', (_, res) => {
         const uptime = getUptime();
 
         res.json({ uptime });
     });
 
-    app.get('/ups-status', async (req, res) => {
+    app.get('/ups-status', async (_, res) => {
         try {
             const upsStatus = await getUPSStatus(config, logger);
 
@@ -121,13 +87,13 @@ function run() {
         }
     });
 
-    const getFavicon = (req, res) =>
+    const getFavicon = (_, res) =>
         res.sendFile(path.resolve(__dirname, '../src/images/favicon.jpg'));
 
     app.get('/favicon.ico', getFavicon);
     app.get('/favicon.jpg', getFavicon);
 
-    setupClient(config, app);
+    setupClient(app);
 
     const port = process.env.PORT || 3000;
 
