@@ -10,14 +10,14 @@ export const NavBox = styled.div<{
     box-shadow: 0 3px 14px rgba(190, 90, 0, 0.5);
     color: black;
     display: flex;
-    left: -25%;
+    left: 50%;
     overflow: hidden;
+    min-width: ${rem(300)};
     position: absolute;
     top: ${rem(38)};
-    transform: scaleY(1);
+    transform: scaleY(1) translateX(-50%);
     transform-origin: top;
     transition: transform 0.2s cubic-bezier(0, 1, 0.5, 1);
-    width: 150%;
     z-index: 10;
 
     ${({ isHidden = false }) =>

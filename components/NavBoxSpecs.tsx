@@ -9,7 +9,7 @@ export const NavBoxSpecs: React.FC = () => {
     const [hidden, setHidden] = useState<boolean>(true);
 
     return (
-        <div>
+        <Styled.SpecsContainer>
             <h3>Specs</h3>
             <NavDropdown>
                 {Object.entries(Specs).map(([key, spec]) => (
@@ -26,6 +26,6 @@ export const NavBoxSpecs: React.FC = () => {
                 ))}
             </NavDropdown>
             <Styled.SpecsPreview isHidden={hidden} spec={selectedSpec} />
-        </div>
+        </Styled.SpecsContainer>
     );
 };

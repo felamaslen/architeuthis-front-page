@@ -5,6 +5,10 @@ import { rem, rgb } from 'polished';
 import { specImages } from './NavBoxSpecs.images';
 import { Specs } from './NavBoxSpecs.types';
 
+export const SpecsContainer = styled.div`
+    width: ${rem(340)};
+`;
+
 export const Spec = styled.li`
     &:not(:last-child) {
         border-bottom: 1px solid ${rgb(192, 192, 192)};
