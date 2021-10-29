@@ -1,29 +1,7 @@
 <!doctype html>
 <html>
-    <head>
-        <title><%= title %></title>
-        <link rel="icon" type="image/jpeg" href="/favicon.jpg?v=<%= version %>" />
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0" />
-        <% if (!__WDS__) { %>
-        <link rel="stylesheet" href="style.css?v=<%= version %>" />
-        <% } %>
-        <script>
-        //<![CDATA[
-        var globalConfig={
-            uptime:<%- uptime %>,
-            installTime:<%- constants.installTime %>,
-            ups:'<%- JSON.stringify(ups) %>'
-        };
-        //]]>
-        </script>
-    </head>
     <body>
         <div class="container-outer">
-            <div id="monitor" class="monitor-outer"></div>
-            <div class="logo-outer">
-                <div class="logo"></div>
-            </div>
             <footer>
                 <ul class="logos-services">
                 <% services.forEach(service => { %>
