@@ -1,6 +1,6 @@
 export enum Specs {
     CPU = 'CPU: Intel Celeron G1850 2.90GHz',
-    RAM = 'RAM: Kingston 8GB ECC DDR3',
+    RAM = 'RAM: Kingston 2x8GB ECC DDR3',
     HDD = 'HDD: WD Red 2TB (x2)',
     SSD = 'SSD: Kingston 120GB',
     PSU = 'PSU: 250W FlexATX PSU',

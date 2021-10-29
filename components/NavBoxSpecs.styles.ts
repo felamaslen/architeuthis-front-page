@@ -34,6 +34,7 @@ export const SpecsPreview = styled.div<{
         spec
             ? css`
                   background-image: url(${specImages[spec].x1});
+                  background-size: 340px 160px;
                   @media (min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
                       background-image: url(${specImages[spec].x2});
                   }
