@@ -1,19 +1,18 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
+import { ContainerOuter } from '../components/Container';
 import styles from '../styles/Home.module.css';
 
 const Home: NextPage = () => (
-    <div>
+    <>
         <Head>
             <title>{process.env.NEXT_PUBLIC_TITLE}</title>
-            <meta charSet="utf-8" />
-            <link rel="icon" href="/favicon.ico" />
         </Head>
-        <main>
+        <ContainerOuter>
             <nav></nav>
-        </main>
-    </div>
+        </ContainerOuter>
+    </>
 );
 
 export default Home;
