@@ -1,10 +1,10 @@
 export type UPS = {
-    date: Date | null;
+    date: string | null;
     model: string | null;
     load: string | null;
     charge: string | null;
     backupTimeSeconds: number | null;
     transfers: number | null;
-    lastPowerFailure: Date | null;
+    lastPowerFailure: string | null;
     timeOnBatterySeconds: number | null;
 };

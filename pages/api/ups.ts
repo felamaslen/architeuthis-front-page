@@ -31,7 +31,6 @@ function processUPSValues({ data }: UPSStatusRaw): UPS {
     const processDate: RawProcessor<'date'> = {
         key: 'date',
         rawKey: 'DATE',
-        proc: (value) => new Date(value),
     };
     const processModel: RawProcessor<'model'> = {
         key: 'model',
@@ -82,7 +81,6 @@ function processUPSValues({ data }: UPSStatusRaw): UPS {
     const processLastPowerFailure: RawProcessor<'lastPowerFailure'> = {
         key: 'lastPowerFailure',
         rawKey: 'XONBATT',
-        proc: (value) => new Date(value),
     };
     const processTimeOnBattery: RawProcessor<'timeOnBatterySeconds'> = {
         key: 'timeOnBatterySeconds',

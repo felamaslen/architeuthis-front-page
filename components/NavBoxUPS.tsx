@@ -1,12 +1,20 @@
 import formatDate from 'date-fns/format';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import isValidDate from 'date-fns/isValid';
+import { useEffect, useMemo, useState } from 'react';
 
 import { initialUPS, UPS } from '../shared/ups';
 import { NavDropdown } from './NavDropdown';
 
 type UPSHook = { ups: UPS; fetching: boolean };
 
-export const UPSContext = createContext<UPSHook>({ ups: initialUPS, fetching: true });
+function formatPossiblyInvalidDate(
+    dateString: string | null,
+    formatString: string,
+    defaultValue = '<unknown>',
+): string {
+    const date = new Date(dateString ?? '');
+    return isValidDate(date) ? formatDate(date, formatString) : defaultValue;
+}
 
 export function useUPS(): { ups: UPS; fetching: boolean } {
     const [ups, setUPS] = useState<UPS>(initialUPS);
@@ -23,10 +31,7 @@ export function useUPS(): { ups: UPS; fetching: boolean } {
             });
             const json = await res.json();
             if (!controller.signal.aborted) {
-                setUPS({
-                    ...json,
-                    date: json.date ? new Date(json.date) : null,
-                });
+                setUPS(json);
                 setFetching(false);
             }
         };
@@ -41,15 +46,13 @@ export function useUPS(): { ups: UPS; fetching: boolean } {
 }
 
 export const NavBoxUPS: React.FC = () => {
-    const { ups, fetching } = useContext(UPSContext);
+    const { ups, fetching } = useUPS();
     return (
         <div>
             <h3>UPS</h3>
             {!fetching && (
                 <NavDropdown>
-                    <li>
-                        Date: {ups.date ? formatDate(ups.date, 'HH:mm yyyy-MM-dd') : '<unknown>'}
-                    </li>
+                    <li>Date: {formatPossiblyInvalidDate(ups.date, 'HH:mm yyyy-MM-dd')}</li>
                     <li>Model: {ups.model ?? '<unknown>'}</li>
                     <li>Load: {ups.load ?? '<unknown>'}</li>
                     <li>Charge: {ups.charge ?? '<unknown>'}</li>
@@ -61,10 +64,12 @@ export const NavBoxUPS: React.FC = () => {
                     </li>
                     <li>Transfers: {ups.transfers ?? '<unknown>'}</li>
                     <li>
-                        Last power failure:
-                        {ups.lastPowerFailure
-                            ? formatDate(ups.lastPowerFailure, 'dddd, mmmm dd yyyy HH:MM:ss')
-                            : 'N/A'}
+                        Last power failure:{' '}
+                        {formatPossiblyInvalidDate(
+                            ups.lastPowerFailure,
+                            'EEEE, MMMM dd yyyy HH:MM:ss',
+                            'N/A',
+                        )}
                     </li>
                     <li>
                         Time on battery:{' '}
