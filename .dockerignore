@@ -1,8 +1,11 @@
 node_modules
 *.log
 Dockerfile
+.dockerignore
 Makefile
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+k8s
+.next
