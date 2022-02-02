@@ -4,11 +4,14 @@ import type { IncomingMessage } from 'http';
 import path from 'path';
 
 import type { NextPage, NextPageContext } from 'next';
+import getConfig from 'next/config';
 import Head from 'next/head';
 import { AppLogo, ContainerOuter, Footer, Header, Nav } from '../components';
 import { UptimeCounter } from '../components/UptimeCounter';
 import { logger } from '../shared/logger';
 import { getSystemUptime } from '../shared/uptime';
+
+const { publicRuntimeConfig } = getConfig();
 
 type Props = {
     clientHostname: string;
@@ -20,7 +23,7 @@ type Props = {
 const Home: NextPage<Props> = ({ clientHostname, logos, services, uptime }) => (
     <>
         <Head>
-            <title>{process.env.NEXT_PUBLIC_TITLE}</title>
+            <title>{publicRuntimeConfig.NEXT_PUBLIC_TITLE}</title>
         </Head>
         <ContainerOuter>
             <Nav />
